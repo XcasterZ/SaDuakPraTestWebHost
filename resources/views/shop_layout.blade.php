@@ -157,30 +157,7 @@
                                 <label for="input_amulet-20" class="checkbox"></label>
                                 <span>อื่นๆ</span>
                             </div>
-                            {{-- <script>
-                                document.addEventListener("DOMContentLoaded", function() {
-                                    // Get the search input element
-                                    var searchInput = document.getElementById("searchInput");
 
-                                    // Get all name_amulet elements
-                                    var nameAmuletItems = document.querySelectorAll(".name_amulet");
-
-                                    // Add an input event listener to the search input
-                                    searchInput.addEventListener("input", function() {
-                                        var searchText = searchInput.value.toLowerCase();
-
-                                        nameAmuletItems.forEach(function(item) {
-                                            var name = item.querySelector("span").textContent.toLowerCase();
-
-                                            if (name.includes(searchText)) {
-                                                item.style.display = "";
-                                            } else {
-                                                item.style.display = "none";
-                                            }
-                                        });
-                                    });
-                                });
-                            </script> --}}
                         </div>
                     </div>
                 </div>
@@ -279,31 +256,6 @@
                             </div>
                         </div>
                     </div>
-                    {{-- <script>
-                        document.addEventListener("DOMContentLoaded", function() {
-                            // ค้นหาอีลีเมนต์ของฟิลด์ค้นหา
-                            var searchInput2 = document.getElementById("searchInput2");
-
-                            // ค้นหารายการชื่ออำเภอทั้งหมด
-                            var nameAmuletItems = document.querySelectorAll(".name_list .name_amulet");
-
-                            // เพิ่ม event listener สำหรับฟิลด์ค้นหา
-                            searchInput2.addEventListener("input", function() {
-                                var searchText = searchInput2.value.toLowerCase();
-
-                                // ตรวจสอบและกรองรายการตามข้อความค้นหา
-                                nameAmuletItems.forEach(function(item) {
-                                    var name = item.querySelector("span").textContent.toLowerCase();
-
-                                    if (name.includes(searchText)) {
-                                        item.style.display = "";
-                                    } else {
-                                        item.style.display = "none";
-                                    }
-                                });
-                            });
-                        });
-                    </script> --}}
                 </div>
                 <div class="box">
                     <form class="check" action="#">
@@ -645,7 +597,7 @@
                         });
                     </script> --}}
                 </div>
-                <div class="box">   
+                <div class="box">
                     <form class="check" action="#">
                         <h4 for="checkbox">ราคา</h4>
                         <input type="checkbox" id="toggleCheckbox3_mobile" class="hidden-checkbox">
@@ -929,7 +881,7 @@
                             }
 
                             var productUrl = '{{ url('/products/auction') }}/' + product
-                            .id;
+                                .id;
 
                             productContainer.append(
                                 '<div class="card">' +
@@ -944,16 +896,17 @@
                                 '        </div>' +
                                 '        <span><b>' + product.name + '</b></span>' +
                                 '        <div class="countdown" data-date="' + product
-                                .date + '" data-time="' + product.time +
-                                '" style="color: red; font-style: italic;"></div>' +
+                                .date + '" data-time="' + product.time + '"></div>' +
                                 '        <div class="amount">' +
                                 '            <span id="amount-' + product.id + '">' +
-                                product.price + '</span>' +
-                                '            <span> Bath</span>' +
+                                product.price +  '</span>' +
+                                '            <span> Bath (ราคาเริ่มต้น)</span>' +
                                 '        </div>' +
                                 '    </div>' +
                                 '</div>'
                             );
+
+
                         });
                     } else {
                         productContainer.append('<p>No products available.</p>');
@@ -1004,41 +957,40 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-    // ฟิลด์ค้นหาสำหรับชื่อพระ
-    var searchInput = document.getElementById("searchInput");
-    var nameAmuletItems = document.querySelectorAll("#toggle-1 .name_amulet");
+        // ฟิลด์ค้นหาสำหรับชื่อพระ
+        var searchInput = document.getElementById("searchInput");
+        var nameAmuletItems = document.querySelectorAll("#toggle-1 .name_amulet");
 
-    searchInput.addEventListener("input", function() {
-        var searchText = searchInput.value.toLowerCase();
+        searchInput.addEventListener("input", function() {
+            var searchText = searchInput.value.toLowerCase();
 
-        nameAmuletItems.forEach(function(item) {
-            var name = item.querySelector("span").textContent.toLowerCase();
+            nameAmuletItems.forEach(function(item) {
+                var name = item.querySelector("span").textContent.toLowerCase();
 
-            if (name.includes(searchText)) {
-                item.style.display = "";
-            } else {
-                item.style.display = "none";
-            }
+                if (name.includes(searchText)) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
+        });
+
+        // ฟิลด์ค้นหาสำหรับอำเภอ
+        var searchInput2 = document.getElementById("searchInput2");
+        var districtItems = document.querySelectorAll("#toggle-2 .name_amulet");
+
+        searchInput2.addEventListener("input", function() {
+            var searchText = searchInput2.value.toLowerCase();
+
+            districtItems.forEach(function(item) {
+                var name = item.querySelector("span").textContent.toLowerCase();
+
+                if (name.includes(searchText)) {
+                    item.style.display = "";
+                } else {
+                    item.style.display = "none";
+                }
+            });
         });
     });
-
-    // ฟิลด์ค้นหาสำหรับอำเภอ
-    var searchInput2 = document.getElementById("searchInput2");
-    var districtItems = document.querySelectorAll("#toggle-2 .name_amulet");
-
-    searchInput2.addEventListener("input", function() {
-        var searchText = searchInput2.value.toLowerCase();
-
-        districtItems.forEach(function(item) {
-            var name = item.querySelector("span").textContent.toLowerCase();
-
-            if (name.includes(searchText)) {
-                item.style.display = "";
-            } else {
-                item.style.display = "none";
-            }
-        });
-    });
-});
-
 </script>

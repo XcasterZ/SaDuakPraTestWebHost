@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{asset('css/mobile_filter.css')}}">
     <link rel="stylesheet" href="{{asset('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css')}}">
     <link rel="stylesheet" href="{{asset('css/cart.css')}}">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{asset('https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')}}"></script>
     {{-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> --}}
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -19,9 +20,7 @@
         body {
             font-family: 'Kanit', sans-serif;
         }
-    </style>
-
-    
+    </style> 
     <style>
         .file-info {
             font-size: 14px;
@@ -29,6 +28,7 @@
             margin-top: 10px;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 </head>
 
@@ -256,7 +256,9 @@
     <script src="/js/script.js"></script>
     <script src="/js/script2.js"></script>
     <script src="https://kit.fontawesome.com/d671ca6a52.js" crossorigin="anonymous"></script>
-    
+    <script>
+        
+    </script>
 </body>
 
 </html>

@@ -2,7 +2,7 @@
 
 
 namespace App\Models;
-
+use App\Models\Auction;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,6 +37,8 @@ class Product extends Model
     {
         return $this->belongsTo(UserWeb::class, 'id_user', 'id');
     }
+
+    
 
 
 }

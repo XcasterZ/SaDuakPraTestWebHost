@@ -10,7 +10,8 @@
                     @endphp
                     {{ $seller ? ($seller->first_name && $seller->last_name ? $seller->first_name . ' ' . $seller->last_name : $seller->username) : 'Seller Name' }}
                 </h4>
-                <div class="cart_product">
+
+                <div class="cart_product" data-product-id="{{ $product->id }}" data-current-url="{{ $route ?? '#' }}">
                     <div class="cart_img">
                         @if ($product->file_path_1)
                             @php
@@ -49,18 +50,18 @@
                         @endif
                     </div>
                     <div class="grid_cart">
-                    <div class="cart_name">
-                        <p>{{ $product->name }}</p>
+                        <div class="cart_name">
+                            <p>{{ $product->name }}</p>
+                        </div>
+                        <div class="cart_price">
+                            <p id="price-display-{{ $product->id }}">{{ $product->price }} baht</p>
+                        </div>
+                        <div class="cart_qty">
+                            <input class="product-qty" type="number" id="product-qty-{{ $product->id }}"
+                                name="product-qty" min="1" max="{{ $product->quantity ?? 'null' }}"
+                                value="{{ $productQuantities[$product->id] ?? 1 }}">
+                        </div>
                     </div>
-                    <div class="cart_price">
-                        <p id="price-display-{{ $product->id }}">{{ $product->price }} baht</p>
-                    </div>
-                    <div class="cart_qty">
-                        <input class="product-qty" type="number" id="product-qty-{{ $product->id }}" name="product-qty" min="1"
-                            max="{{ $product->quantity ?? 'null' }}"
-                            value="{{ $productQuantities[$product->id] ?? 1 }}">
-                    </div>
-                </div>
                 </div>
 
                 <div class="cart_total">
@@ -89,7 +90,11 @@
                         <button class="remove-product" data-product-id="{{ $product->id }}">ลบ</button>
                     </div>
                     <div class="payment_chat">
-                        <button>แชท</button>
+                        <button class="chat-button" data-product-id="{{ $product->id }}"
+                            data-product-image="{{ asset('storage/' . $product->file_path_1) }}"
+                            data-product-name="{{ $product->name }}" data-product-price="{{ $product->price }}"
+                            data-product-quantity="{{ $product->quantity }}" data-seller-id="{{ $seller->id }}"
+                            data-seller-username="{{ $seller->username }}">แชท</button>
                     </div>
                 </div>
             </div>
@@ -258,6 +263,96 @@
 
 @endsection
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (performance.navigation.type === performance.navigation.TYPE_BACK_FORWARD){
+            // รีเฟรชหน้า
+            location.reload();
+        }
+        document.querySelectorAll('.chat-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const productId = this.getAttribute('data-product-id');
+                const productImagePath = this.getAttribute('data-product-image');
+                const productName = this.getAttribute('data-product-name');
+                const productPrice = this.getAttribute('data-product-price');
+                const productQuantity = document.getElementById(`product-qty-${productId}`).value;
+                const sellId = this.getAttribute('data-seller-id');
+                const userId = this.getAttribute('data-seller-username');
+                const recipient = parseInt(sellId, 10);
+                console.log('recipient :', recipient);
+
+                // สร้าง URL สำหรับผลิตภัณฑ์ตาม productId
+                const currentUrl = `${window.location.origin}/product/${productId}`; // เปลี่ยนเส้นทางตามที่คุณต้องการ
+
+                // สร้าง URL สำหรับการแชท
+                const url =
+                    `/chat?sellId=${encodeURIComponent(sellId)}&seller_id=${encodeURIComponent(userId)}&product_id=${encodeURIComponent(productId)}&image=${encodeURIComponent(productImagePath)}&name=${encodeURIComponent(productName)}&price=${encodeURIComponent(productPrice)}&quantity=${encodeURIComponent(productQuantity)}&current_url=${encodeURIComponent(currentUrl)}`;
+
+                window.location.href = url;
+
+                // เรียกใช้ฟังก์ชัน sendChatMessage
+                sendChatMessage(productName, productImagePath, productPrice,
+                    productQuantity, currentUrl, userId,
+                    recipient);
+            });
+        });
+
+        // นำฟังก์ชัน sendChatMessage ออกมานอกลูปของการฟังเหตุการณ์
+        function sendChatMessage(productName, productImage, productPrice,
+            productQuantity, currentUrl, sellerId,
+            recipient) {
+            const message = ''; // สามารถกำหนดข้อความเริ่มต้น หรือปล่อยว่าง
+
+            // ข้อมูลสินค้า
+            const product = {
+                product_name: productName,
+                product_image: productImage, // แก้ไขให้ถูกต้อง
+                product_price: parseFloat(productPrice), // แปลงเป็นตัวเลข
+                product_quantity: parseInt(productQuantity, 10), // แปลงเป็นจำนวนเต็ม
+                current_url: currentUrl,
+                seller_id: sellerId // เปลี่ยนจาก userId เป็น sellerId
+            };
+
+            // รับ CSRF token จาก meta tag
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')
+                .getAttribute('content');
+
+            console.log('Product data being sent:', product);
+            console.log('Sender ID:', parseInt('{{ auth()->check() ? auth()->user()->id : 0 }}', 10));
+            console.log('Recipient ID:', parseInt(recipient, 10));
+            console.log('Message:', message);
+
+            axios.post('/store-message', {
+                    sender: parseInt('{{ auth()->check() ? auth()->user()->id : 0 }}', 10), // ผู้ส่ง (ที่ได้จาก auth)
+                    recipient: parseInt(recipient, 10), // ผู้รับ (currentUserId)
+                    message: message, // ข้อความแชท
+                    ...product // ส่งข้อมูลสินค้าไปด้วย
+                }, {
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken // เพิ่ม token ใน headers
+                    }
+                })
+                .then(response => {
+                    console.log('Message sent:', response.data);
+                })
+                .catch(error => {
+                    // แสดงรายละเอียดข้อผิดพลาด
+                    console.error('Error sending message:', error.message);
+                    if (error.response) {
+                        console.error('Response data:', error.response.data);
+                        console.error('Response status:', error.response.status);
+                        console.error('Response headers:', error.response.headers);
+                    } else if (error.request) {
+                        // ข้อผิดพลาดที่เกิดขึ้นในการส่งคำขอ แต่ไม่ได้รับการตอบกลับ
+                        console.error('Request data:', error.request);
+                    } else {
+                        // ข้อผิดพลาดในการตั้งค่าคำขอ
+                        console.error('Error', error.message);
+                    }
+                });
+        }
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -376,13 +471,7 @@
         qtyInputs.forEach(input => {
             input.addEventListener('input', updatePrices);
         });
-
         // เรียกใช้ฟังก์ชัน updatePrices เมื่อโหลดหน้า
         updatePrices();
     });
 </script>
-
-
-
-
-

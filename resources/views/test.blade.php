@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -355,4 +355,4 @@
     <script src="https://kit.fontawesome.com/d671ca6a52.js" crossorigin="anonymous"></script>
     
 </body>
-</html>
+</html> --}}
