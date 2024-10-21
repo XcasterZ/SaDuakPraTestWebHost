@@ -13,7 +13,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // ตั้งเวลาให้รันทุกนาที
-        $schedule->command('auction:send-chat-message')->everyMinute();
     }
 
     /**
