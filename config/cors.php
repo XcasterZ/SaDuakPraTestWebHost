@@ -31,6 +31,6 @@ return [
 
     'supports_credentials' => true,
     'paths' => ['api/*', 'broadcasting/auth', 'pusher/*', 'sanctum/csrf-cookie'],
-    'allowed_origins' => ['https://saduakpratestwebhost-production.up.railway.ap'],
+    'allowed_origins' => ['https://saduakpratestwebhost-production.up.railway.ap'], 
 
 ];
